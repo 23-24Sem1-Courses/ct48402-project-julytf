@@ -1,11 +1,13 @@
 import 'dart:math';
 
+import 'package:ct484_project/models/diary.dart';
 import 'package:ct484_project/ui/calendar/calendar.screen.dart';
 import 'package:ct484_project/ui/diary/diary.manager.dart';
 import 'package:ct484_project/ui/diary/edit.diary.screen.dart';
 import 'package:ct484_project/ui/diary/diary.screen.dart';
 import 'package:ct484_project/ui/profile/profile.screen.dart';
 import 'package:ct484_project/ui/shared/AppBottomNavigationBar.dart';
+import 'package:ct484_project/ui/shared/DiaryCard.dart';
 import 'package:ct484_project/ui/shared/MonthPicker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -21,11 +23,12 @@ class CalendarScreen extends StatefulWidget {
 
 class _CalendarScreenState extends State<CalendarScreen> {
   DateTime selectedDate = DateTime.now();
+  Diary? selectedDiary;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: const AppBottomNavigationBar(),
-      body: Column(
+      body: ListView(
         children: [
           const SizedBox(
             height: 40,
@@ -40,7 +43,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       lastDate: DateTime(2050),
                     ) ??
                     DateTime.now();
-                print(selectedDate);
+                // print(selectedDate);
+                selectedDiary = null;
                 setState(() {});
               },
               child: Text(
@@ -53,7 +57,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             height: 40,
           ),
           const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
               Text('Mon'),
               Text('Tue'),
@@ -79,6 +83,12 @@ class _CalendarScreenState extends State<CalendarScreen> {
               );
             },
           ),
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: selectedDiary != null
+                ? DiaryCard(diary: selectedDiary!)
+                : const SizedBox(),
+          ),
         ],
       ),
     );
@@ -95,7 +105,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         DateTime(selectedDate.year, selectedDate.month + 1, 0).day;
 
     return SizedBox(
-      height: 400.0,
+      height: 350.0,
       child: GridView.builder(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 7,
@@ -105,40 +115,43 @@ class _CalendarScreenState extends State<CalendarScreen> {
           if (index < offset) {
             return Container();
           }
-          print('---');
-          print(index);
-          print(existedDiaries?.indexWhere(
-              (diary) => diary.dateTime.day == (index - offset + 1)));
-          print(existedDiaries?.indexWhere(
-                  (diary) => diary.dateTime.day == (index - offset + 1)) !=
-              -1);
-          print('---');
           return Center(
-            child: Container(
-              width: 45.0,
-              height: 45.0,
-              padding: const EdgeInsets.all(8.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: existedDiaries?.indexWhere((diary) =>
-                            diary.dateTime.day == (index - offset + 1)) !=
-                        -1
-                    ? Colors.blue[300]
-                    : null,
-                border: Border.all(
-                  color: Colors.black,
-                  width: 1.0,
-                ),
-              ),
-              child: GestureDetector(
-                onTap: () async {
+            child: GestureDetector(
+              onTap: () async {
+                Diary? existedDiary;
+                try {
+                  existedDiary = existedDiaries?.firstWhere(
+                    (diary) => diary.dateTime.day == (index - offset + 1),
+                  );
+                } catch (e) {}
+                if (existedDiary == null) {
                   await Navigator.of(context).pushNamed(
                     EditDiaryScreen.routeName,
                     arguments: DateTime(selectedDate.year, selectedDate.month,
                         index - offset + 1),
                   );
                   setState(() {});
-                },
+                  return;
+                }
+                selectedDiary = existedDiary;
+                setState(() {});
+              },
+              child: Container(
+                width: 45.0,
+                height: 45.0,
+                padding: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: existedDiaries?.indexWhere((diary) =>
+                              diary.dateTime.day == (index - offset + 1)) !=
+                          -1
+                      ? Colors.blue[300]
+                      : null,
+                  border: Border.all(
+                    color: Colors.black,
+                    width: 1.0,
+                  ),
+                ),
                 child: Center(
                   child: Text(
                     (index - offset + 1).toString(),

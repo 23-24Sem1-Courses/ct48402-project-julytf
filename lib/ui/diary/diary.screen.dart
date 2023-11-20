@@ -2,7 +2,9 @@ import 'dart:developer';
 
 import 'package:ct484_project/models/diary.dart';
 import 'package:ct484_project/ui/diary/diary.manager.dart';
+import 'package:ct484_project/ui/diary/edit.diary.screen.dart';
 import 'package:ct484_project/ui/shared/AppBottomNavigationBar.dart';
+import 'package:ct484_project/ui/shared/DiaryCard.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +35,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
             child: Column(
               children: [
                 const SizedBox(
-                  height: 16,
+                  height: 24,
                 ),
                 Expanded(child: buildDiariesListView(context)),
               ],
@@ -53,7 +55,12 @@ class _DiaryScreenState extends State<DiaryScreen> {
           itemCount: diariesManager.itemCount,
           itemBuilder: (BuildContext context, int index) {
             return Container(
-              child: buildDiaryCard(context, diariesManager.items[index]),
+              child: DiaryCard(
+                diary: diariesManager.items[index],
+                onTriggerRebuild: () {
+                  setState(() {});
+                },
+              ),
             );
           },
           separatorBuilder: (BuildContext context, int index) =>
@@ -63,24 +70,45 @@ class _DiaryScreenState extends State<DiaryScreen> {
     );
   }
 
-  Widget buildDiaryCard(BuildContext context, Diary diary) {
-    return Container(
-      decoration: BoxDecoration(
-          border: Border.all(),
-          borderRadius: const BorderRadius.all(Radius.circular(20))),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(DateFormat.yMMMMd().format(diary.dateTime)),
-            const SizedBox(
-              height: 6,
-            ),
-            Text(diary.content),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget buildDiaryCard(BuildContext context, Diary diary) {
+  //   return Container(
+  //     decoration: BoxDecoration(
+  //         border: Border.all(),
+  //         borderRadius: const BorderRadius.all(Radius.circular(10))),
+  //     child: Padding(
+  //       padding: const EdgeInsets.all(8.0),
+  //       child: Column(
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           Row(
+  //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //             children: [
+  //               Text(
+  //                 DateFormat.yMMMMd().format(diary.dateTime),
+  //                 style: const TextStyle(
+  //                   fontWeight: FontWeight.bold, // for bold
+  //                   fontSize: 18.0, // for font size
+  //                 ),
+  //               ),
+  //               IconButton(
+  //                 onPressed: () async {
+  //                   await Navigator.of(context).pushNamed(
+  //                     EditDiaryScreen.routeName,
+  //                     arguments: diary.dateTime,
+  //                   );
+  //                   setState(() {});
+  //                 },
+  //                 icon: const Icon(Icons.edit),
+  //               )
+  //             ],
+  //           ),
+  //           const SizedBox(
+  //             height: 6,
+  //           ),
+  //           Text(diary.content),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 }

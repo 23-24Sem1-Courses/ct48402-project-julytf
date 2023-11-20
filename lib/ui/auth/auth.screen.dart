@@ -3,7 +3,6 @@ import 'package:ct484_project/ui/auth/auth.manager.dart';
 import 'package:ct484_project/ui/auth/components/auth_text_form_field.dart';
 import 'package:ct484_project/ui/auth/values/auth.colors.dart';
 import 'package:ct484_project/ui/auth/values/auth.constants.dart';
-import 'package:ct484_project/ui/auth/values/auth.routes.dart';
 import 'package:ct484_project/ui/auth/values/auth.theme.dart';
 import 'package:ct484_project/ui/calendar/calendar.screen.dart';
 import 'package:ct484_project/ui/shared/dialog_utils.dart';
@@ -115,7 +114,9 @@ class _AuthScreenState extends State<AuthScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${_authMode == AuthMode.login ? 'Sign in to your\nAccount' : 'Sign up new\nAccount'}',
+                        _authMode == AuthMode.login
+                            ? 'Sign in to your\nAccount'
+                            : 'Sign up new\nAccount',
                         style: AuthTheme.themeData.textTheme.titleLarge,
                       ),
                       const SizedBox(

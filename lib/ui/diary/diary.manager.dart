@@ -17,7 +17,8 @@ class DiariesManager with ChangeNotifier {
   }
 
   Future<void> fetchDiaries([bool filterByUser = false]) async {
-    _items = await _diariesService.fetchDiaries(filterByUser);
+    _items =
+        (await _diariesService.fetchDiaries(filterByUser)).reversed.toList();
     // log(_items.length.toString());
     notifyListeners();
   }
