@@ -30,7 +30,7 @@ class Diary {
   static Diary fromJson(Map<String, dynamic> json) {
     return Diary(
       dateTime: DateTime.parse(json['dateTime']),
-      content: json['content'],
+      content: json['content'] ?? '',
     );
   }
 }

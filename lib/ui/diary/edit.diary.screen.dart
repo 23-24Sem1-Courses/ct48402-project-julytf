@@ -26,6 +26,11 @@ class _EditDiaryScreenState extends State<EditDiaryScreen> {
   Future<void> _onSave() async {
     try {
       DiariesManager diariesManager = context.read<DiariesManager>();
+      if (contentController.text.isEmpty) {
+        Navigator.of(context).pop();
+        return;
+      }
+      ;
       _editedDiary.content = contentController.text;
       if (_editedDiary.id != null) {
         await diariesManager.updateDiary(_editedDiary);
